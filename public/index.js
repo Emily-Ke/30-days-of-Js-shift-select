@@ -58,14 +58,19 @@ const sortNumbers = (a, b) => {
 
 const handleCheckboxChange = e => {
   const currentIndex = getIndex(e.target.id);
-  if (shiftPressed) {
-    const [min, max] = [indexOfLastChecked, currentIndex].sort(sortNumbers);
-    for (let i = min; i <= max; i++) {
-      const checkbox = checklistItemElements[i].childNodes[0];
-      checkbox.checked = true;
+  const { checked } = checklistItemElements[currentIndex].childNodes[0];
+  if (!checked) {
+    indexOfLastChecked = -1;
+  } else {
+    if (indexOfLastChecked !== -1 && shiftPressed) {
+      const [min, max] = [indexOfLastChecked, currentIndex].sort(sortNumbers);
+      for (let i = min; i <= max; i++) {
+        const checkbox = checklistItemElements[i].childNodes[0];
+        checkbox.checked = true;
+      }
     }
+    indexOfLastChecked = currentIndex;
   }
-  indexOfLastChecked = currentIndex;
 };
 
 // listeners
