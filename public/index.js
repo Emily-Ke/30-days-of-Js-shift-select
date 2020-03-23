@@ -12,23 +12,19 @@ const initialChecklistData = [
 ];
 
 // build ui
-const checklistItemElements = initialChecklistData.map(
-  ({ text, checked }, index) => {
-    const listItemElement = document.createElement('li');
+const checklistItemElements = initialChecklistData.map(({ text, checked }) => {
+  const listItemElement = document.createElement('li');
 
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = checked;
-    checkbox.id = `checklist-item-${index}`;
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = checked;
 
-    const label = document.createElement('label');
-    label.textContent = text;
-    label.htmlFor = `checklist-item-${index}`;
+  const label = document.createElement('label');
+  label.textContent = text;
 
-    listItemElement.append(checkbox, label);
-    return listItemElement;
-  }
-);
+  listItemElement.append(checkbox, label);
+  return listItemElement;
+});
 const checklistElement = document.createElement('ul');
 checklistElement.id = 'checklist';
 checklistElement.append(...checklistItemElements);
@@ -37,51 +33,31 @@ const { body } = document;
 body.prepend(checklistElement);
 
 // global variables
-let shiftPressed = false;
-let indexOfLastChecked = -1;
+let lastChecked;
+const checkboxElements = document.querySelectorAll(
+  '#checklist input[type="checkbox"]'
+);
 
 // functionality
-const getIndex = idString => {
-  const indexOfLastDash = idString.lastIndexOf('-');
-  return idString.substring(indexOfLastDash + 1);
-};
-
-const sortNumbers = (a, b) => {
-  if (a < b) {
-    return -1;
-  }
-  if (a > b) {
-    return 1;
-  }
-  return 0;
-};
-
-const handleCheckboxChange = e => {
-  const currentIndex = getIndex(e.target.id);
-  const { checked } = checklistItemElements[currentIndex].childNodes[0];
+const handleCheckboxChange = ({ target, shiftKey }) => {
+  const { checked } = target;
   if (!checked) {
-    indexOfLastChecked = -1;
+    lastChecked = null;
   } else {
-    if (indexOfLastChecked !== -1 && shiftPressed) {
-      const [min, max] = [indexOfLastChecked, currentIndex].sort(sortNumbers);
-      for (let i = min; i <= max; i++) {
-        const checkbox = checklistItemElements[i].childNodes[0];
-        checkbox.checked = true;
-      }
+    let inBetween = false;
+    if (lastChecked && shiftKey) {
+      checkboxElements.forEach(checkbox => {
+        if (checkbox === lastChecked || checkbox === target) {
+          inBetween = !inBetween;
+        }
+        if (inBetween) {
+          checkbox.checked = true;
+        }
+      });
     }
-    indexOfLastChecked = currentIndex;
+    lastChecked = target;
   }
 };
 
 // listeners
-document.addEventListener('keydown', e => {
-  if (e.keyCode !== 16) return;
-  shiftPressed = true;
-});
-
-document.addEventListener('keyup', e => {
-  if (e.keyCode !== 16) return;
-  shiftPressed = false;
-});
-
-checklistElement.addEventListener('change', handleCheckboxChange);
+checklistElement.addEventListener('click', handleCheckboxChange);
