@@ -30,6 +30,7 @@ const checklistItemElements = initialChecklistData.map(
   }
 );
 const checklistElement = document.createElement('ul');
+checklistElement.id = 'checklist';
 checklistElement.append(...checklistItemElements);
 
 const { body } = document;

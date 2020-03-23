@@ -3,3 +3,45 @@
   margin: 0;
   padding: 0;
 }
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  padding: 2rem 0;
+  background-color: #ffc600;
+  color: #222;
+}
+
+#checklist {
+  min-width: 200px;
+  width: 80%;
+  max-width: 300px;
+  margin: auto;
+  list-style-type: none;
+  background-color: white;
+  box-shadow: 6px 6px 2px rgba(0, 0, 16, 0.2);
+}
+
+#checklist > li {
+  border-bottom: 1px solid lightgray;
+  display: flex;
+  align-items: center;
+}
+
+#checklist > li:last-of-type {
+  border-bottom: none;
+}
+
+#checklist input {
+  margin: 0 1rem;
+}
+
+#checklist label {
+  width: 100%;
+  padding: 1rem;
+  border-left: 1px solid lightgray;
+}
+
+#checklist input:checked + label {
+  background: #eee;
+  text-decoration: line-through;
+}
